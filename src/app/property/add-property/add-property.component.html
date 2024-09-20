@@ -1,0 +1,295 @@
+<div class="row mb-5">
+    <!-- القسم اليسار من الصفحة -->
+    <div class="col-8 shadow-lg p-0 bg-white rounded-bottom">
+        <div class="card">
+            <div class="card-header">
+                <h3>List your Property</h3>
+            </div>
+
+            <div class="card-body">
+                <!-- templat driven form: -->
+                <!-- #Form="ngForm مؤشر على (النموذج) بعناصره التي لها الخاصية (ان جي موديل) من الفيو الى الكلاس من خلال الحدث (سبمت) او من خلال استقباله ضمن الكلاس باستخدام @ViewChild('Form') -->
+                <!-- ngModelGroup="BasicInfo": لتعريف كل تاب على انه مجموعة من العناصر -->
+                <!-- ngModel: لتعريف ان هذا العنصر هو احد عناصر النموذج الممرر للكلاس #Form -->
+                <!-- name ="" ضرورية للوصول للعنصر -->
+                <!-- #propName="ngModel": ريفرنس على العنصر(كاملا) -->
+                <!-- [(ngModel)]: banana in the box (two-way binding) -->
+
+                <!-- Reactive Form: -->
+                <!-- [formGroup] = "x" <=> #x="ngForm: to pass form (addPropertyForm) from class to view -->
+                <!-- formGroupName = 'x': في حال تعريفها ضمن الكلاس يجب تعريفها هنا و الا لن يصل الكلاس للعناصر التي بداخلها -->
+                <!-- formControlName="x" <=> ngModel + name="x" -->
+                <form [formGroup]="addPropertyForm" (ngSubmit)="onSubmit()">
+                    <!-- ngx-bootstrap -->
+                    <div class="tab-panel">
+                        <tabset #formTabs class="member-tabset">
+                            <!-- ---------------(1)-------------- -->
+                            <!-- Property Basic Info -->
+                            <!-- -------------------------------- -->
+                            <tab heading="Basic Info" formGroupName="BasicInfo">
+                                <!-- Sell-Rent: (بيع - تأجير)-->
+                                <div class="form-group col-12 mb-3 mt-3">
+                                    <p class="mb-1">I want to</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="SellRent">
+                                        <label class="btn btn-outline-primary me-2" btnRadio="1" role="button" name="sellRent">Sell</label>
+                                        <label class="btn btn-outline-primary" btnRadio="2" role="button" name="sellRent">Rent</label>
+                                    </div>
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="SellRent.invalid && nextClicked">
+                                        Please select sell or rent
+                                    </div>
+                                </div>
+                                <!-- BHK: (Bedroom, Hall, Kitchen) - عدد الغرف -->
+                                <div class="form-group col-12 mb-3">
+                                    <p class="mb-1">BHK</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="BHK" [(ngModel)]="propertyView.bhk">
+                                        <label *ngFor="let bhk of [1, 2, 3, 4]" class="btn btn-outline-primary me-2" [btnRadio]="bhk" role="button">{{ bhk }}</label>
+                                    </div>
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="BHK.invalid && nextClicked">
+                                        Please select number of rooms
+                                    </div>
+                                </div>
+                                <!-- PropertyType: (منزل, شقة, مزدوج) نوع العقار -->
+                                <div class="form-group col-12 mb-2">
+                                    <p class="mb-1">Property Type</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="PType" [(ngModel)]="propertyView.propertyType">
+                                        <label *ngFor="let ptype of PropertyType" class="btn btn-outline-primary me-2" [btnRadio]="ptype" role="button">{{ ptype }}</label>
+                                    </div>
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="PType.invalid && nextClicked">
+                                        Please select PType
+                                    </div>
+                                </div>
+                                <!-- furnishType: (مفروش, شبه مفروش, غير مفروش) فرش العقار -->
+                                <div class="form-group col-12 mb-2">
+                                    <p class="mb-1">Property furnishType</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="FType" [(ngModel)]="propertyView.furnishingType">
+                                        <label *ngFor="let ftype of furnishType" class="btn btn-outline-primary me-2" [btnRadio]="ftype" role="button">{{ ftype }}</label>
+                                    </div>
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="FType.invalid && nextClicked">
+                                        Please select FType
+                                    </div>
+                                </div>
+                                <!-- Property name اسم او عنوان العقار -->
+                                <div class="form-group col-12 mb-2">
+                                    <label for="name" class="mb-1">in Building/Society/Project</label>
+                                    <input type="text" class="form-control" formControlName="Name" [(ngModel)]="propertyView.name" />
+                                    <!-- invalid message -->
+                                    <!-- في حال ان حقل الاسم غير صالح (فارغ) + تم لمسه  -->
+                                    <span class="error-block" *ngIf="Name.invalid && (Name.touched || nextClicked)">
+                                        <span *ngIf="Name?.errors?.['required']">Please provide name</span>
+                                    <span *ngIf="Name?.hasError('minlength')">must be atleast (5) char long</span>
+                                    </span>
+                                </div>
+                                <!-- Property city مدينة العقار -->
+                                <div class="form-group col-12 mb-3">
+                                    <label for="City" class="mb-1">city</label>
+                                    <input type="text" class="form-control" formControlName="City" [(ngModel)]="propertyView.city" />
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="City.invalid && (City.touched || nextClicked)">
+                                        Please provide City
+                                    </div>
+                                </div>
+                                <!-- Next Button -->
+                                <div class="form-group col-12 d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(1, basicInfo.valid)">
+                                        Next
+                                    </button>
+                                </div>
+                            </tab>
+
+                            <!--  ---------------(2)-------------- -->
+                            <!-- Property Pricing and Area -->
+                            <!-- --------------------------------- -->
+                            <!-- سعر البيع او الاجار (حسب الاختيار) -->
+                            <tab heading="Pricing and Area" formGroupName="PriceInfo">
+                                <div class="form-group col-12 mb-2 mt-3">
+                                    <label *ngIf="SellRent.value == 1">Price (in USD)</label>
+                                    <label *ngIf="SellRent.value == 2">Rent (in USD)</label>
+                                    <input type="number" class="form-control" formControlName="Price" [(ngModel)]="propertyView.price" />
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="Price.invalid && (Price.touched || nextClicked)">
+                                        Please insert the
+                                        <span *ngIf="SellRent.value == 1;else Rent">price</span>
+                                        <ng-template #Rent>rent</ng-template>
+                                    </div>
+                                </div>
+
+
+                                <!-- تأمينات ضمان: فقط في حالة التأجير -->
+                                <div class="form-group col-12 mb-2" *ngIf="SellRent.value==2">
+                                    <label>Security (in USD)</label>
+                                    <input type="number" class="form-control" formControlName="Security" />
+                                </div>
+
+                                <!-- تأمينات صيانة: فقط في حالة التأجير -->
+                                <div class="form-group col-12 mb-2" *ngIf="SellRent.value==2">
+                                    <label>Maintenance (in USD)</label>
+                                    <input type="number" class="form-control" formControlName="Maintenance" />
+                                </div>
+
+                                <!-- مساحة العقار -->
+                                <div class="form-group col-12 mb-2">
+                                    <label>Built Area (in Sqr Feet)</label>
+                                    <input type="number" class="form-control" formControlName="BuiltArea" [(ngModel)]="propertyView.builtArea" />
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="(BuiltArea.invalid && (BuiltArea.touched || nextClicked))">
+                                        Please input the BuiltArea
+                                    </div>
+                                </div>
+
+                                <!-- مساحة السجاد ضمن الفرش -->
+                                <div class="form-group col-12 mb-3">
+                                    <label>Carpet Area(in Sqr Feet)</label>
+                                    <input type="number" class="form-control" formControlName="CarpetArea" />
+                                </div>
+
+                                <div class="form-group col-12 d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(2, PriceInfo.valid)">Next</button>
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(0, true)">Back</button>
+                                </div>
+                            </tab>
+
+                            <!--  ---------------(3)-------------- -->
+                            <!-- Prorety Address -->
+                            <!-- --------------------------------- -->
+                            <tab heading="Address" formGroupName="AddressInfo">
+
+                                <!-- رقم الطابق -->
+                                <div class="form-group col-12 mb-2 mt-3">
+                                    <label>Floor</label>
+                                    <input type="number" class="form-control" formControlName="FloorNo" />
+                                </div>
+
+                                <!-- عدد الطوابق -->
+                                <div class="form-group col-12 mb-2">
+                                    <label>Total Floor</label>
+                                    <input type="text" class="form-control" formControlName="TotalFloor" />
+                                </div>
+
+                                <!-- العنوان -->
+                                <div class="form-group col-12 mb-2">
+                                    <label>Address</label>
+                                    <input type="text" class="form-control" formControlName="Address" />
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="Address.invalid && (Address.touched || nextClicked)">
+                                        Please provide Address
+                                    </div>
+                                </div>
+
+                                <!-- عنوان ثاني (علامة مميزة) -->
+                                <div class="form-group col-12 mb-3">
+                                    <label>Landmark</label>
+                                    <input type="text" class="form-control" formControlName="LandMark" />
+                                </div>
+
+                                <!-- Next && Back -->
+                                <div class="form-group col-12 d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(3, AddressInfo.valid)">Next</button>
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(1, true)">Back</button>
+                                </div>
+                            </tab>
+
+                            <!--  ---------------(4)-------------- -->
+                            <!-- Property Other Details -->
+                            <!-- --------------------------------- -->
+                            <tab heading="Other Details" formGroupName="OtherInfo">
+                                <!-- حالة الجهوزية للسكن -->
+                                <div class="form-group col-12 mb-3 mt-3">
+                                    <p class="mb-1">Ready to Move</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="RTM">
+                                        <label class="btn btn-outline-primary me-2" btnRadio="1" role="button" name="RTM" (click)="propertyView.readyToMove=true">Yes</label>
+                                        <label class="btn btn-outline-primary" btnRadio="2" role="button" name="RTM" (click)="propertyView.readyToMove=false">No</label>
+                                    </div>
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="RTM.invalid && nextClicked">
+                                        Please select Yes or No
+                                    </div>
+                                </div>
+
+                                <!-- التاريخ المتوقع للحيازة -->
+                                <div class="form-group col-4 mb-2" *ngIf="RTM.value == 2">
+                                    <label>Possession Date</label>
+                                    <input type="text" placeholder="Datepicker" class="form-control" bsDatepicker [bsConfig]="{containerClass: 'theme-dark-blue',dateInputFormat: 'DD-MM-YYYY'}" formControlName="PossessionOn" [(ngModel)]="propertyView.estPossessionOn" />
+                                    <!-- invalid message -->
+                                    <div class="error-block" *ngIf="PossessionOn.invalid && (PossessionOn.touched || nextClicked)">
+                                        Please select establishment/possession date
+                                    </div>
+                                </div>
+
+                                <!-- عمر المسكن -->
+                                <div class="form-group col-4 mb-2" *ngIf="RTM.value == 1">
+                                    <label>Age of Property</label>
+                                    <input type="text" class="form-control" formControlName="AOP" />
+                                </div>
+
+                                <!-- مسور - مجتمع مغلق-->
+                                <div class="form-group col-12 mb-2">
+                                    <p>Gated Community</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="Gated">
+                                        <label class="btn btn-outline-primary me-2" btnRadio=true tabindex="0" role="button" name="Gated">Yes</label>
+                                        <label class="btn btn-outline-primary" btnRadio=false tabindex="0" role="button" name="Gated">No</label>
+                                    </div>
+                                </div>
+
+                                <!-- جهة المدخل الرئيسي -->
+                                <div class="form-group col-12 mb-2">
+                                    <p>Main Entrance</p>
+                                    <div class="btn-group" btnRadioGroup formControlName="MainEntrance">
+                                        <label class="btn btn-outline-primary me-2" btnRadio=East tabindex="0" role="button" name="Entrance">East</label>
+                                        <label class="btn btn-outline-primary me-2" btnRadio=West tabindex="0" role="button" name="Entrance">West</label>
+                                        <label class="btn btn-outline-primary me-2" btnRadio=South tabindex="0" role="button" name="Entrance">South</label>
+                                        <label class="btn btn-outline-primary" btnRadio=North tabindex="0" role="button" name="Entrance">North</label>
+                                    </div>
+                                </div>
+
+                                <!-- تفاصيل اضافية -->
+                                <div class="form-group col-12 mb-3">
+                                    <label>Description</label>
+                                    <textarea type="text" class="form-control" formControlName="Description" rows="6"></textarea>
+                                </div>
+
+                                <div class="form-group col-12 d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(4, OtherInfo.valid)">Next</button>
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(2, true)">Back</button>
+                                </div>
+                            </tab>
+
+                            <!--  ---------------(5)-------------- -->
+                            <!-- Property Upload Photos -->
+                            <!-- --------------------------------- -->
+                            <tab heading="Photos">
+                                <div class="form-group col-12 my-3">
+                                    <div class="photo-control">
+                                        <button class="mt-5" type="button">Upload</button> <br /> This is under construction
+                                    </div>
+                                </div>
+
+                                <!-- ارسال او الغاء النموذج -->
+                                <div class="form-group col-12 d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" (click)="selectTab(3, true)">Back</button>
+                                    <button type="reset" class="btn btn-primary" (click)="onBack()">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </tab>
+                        </tabset>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- (معاينة المسكن - الكارد)القسم اليمين من الصفحة -->
+    <div class="col-4">
+        <div class="card-header rounded-top">
+            <h3>Your property preview</h3>
+        </div>
+        <!-- تمرير العقار الذي يدخل حاليا لكومبوننت كارد من اجل عرضه -->
+        <div class="shadow-lg p-3 bg-white rounded-bottom">
+            <spa-property-card [property]="propertyView" [hideIcon]="true"></spa-property-card>
+        </div>
+    </div>
+</div>

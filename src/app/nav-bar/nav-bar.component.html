@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+    <div class="container-fluid">
+        <a class="navbar-brand" [routerLink]="['/']">HSPA</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link " [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/']">Buy</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" [routerLink]="['/rent-property']">Rent</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" [routerLink]="['/add-property']">List Property (Free)</a>
+                </li>
+
+            </ul>
+
+            <div>
+
+                <!-- قسم اليوزر -->
+                <ul class="nav navbar-nav">
+                    <!-- *ngif="!loggedin()": لا تظهر هذه الروابط في حال المستخدم سجل دخول للموقع -->
+                    <li class="nav-item" *ngIf="!loggedin()">
+                        <a class="nav-link" [routerLink]="['/user/register']" routerLinkActive="active">Register</a>
+                    </li>
+
+                    <li class="nav-item" *ngIf="!loggedin()">
+                        <a class="nav-link" routerLink="/user/login" routerLinkActive="active">Login</a>
+                    </li>
+
+                    <!-- *ngIf="loggedin()": اظهار هذه (الدروب داون) فقط في حال تسجيل الدخول -->
+                    <div *ngIf="loggedin()" class="dropdown me-5">
+
+                        <a (click)="false" class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome {{loggedinUser}}
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            <a href="#" class="dropdown-item">
+                                <span class="fa fa-tachometer"></span> View Dashboard
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <span class="fa fa-user-circle"></span> My Profile
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <span class="fa fa-key"></span> Change Password
+                            </a>
+                            <!-- تسجيل الخروج -->
+                            <a (click)='onLogout()' class="dropdown-item">
+                                <span class="fa fa-sign-out"></span> Logout
+                            </a>
+
+                        </ul>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

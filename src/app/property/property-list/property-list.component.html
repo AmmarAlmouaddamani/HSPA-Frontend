@@ -1,0 +1,27 @@
+<!-- قسم عرض الفلتر و الترتيب -->
+<label>Filter City: &nbsp; </label>
+<input [(ngModel)]='city'>
+<button class="mx-1" type="button" (click)="onCityFilter()">Search</button>
+<button class="" type="button" (click)="onCityFilterClear()">Clear</button> &nbsp;
+
+<label>Sort by &nbsp;</label>
+<select [(ngModel)]='SortbyParam'>
+  <option value="city">City</option>
+  <option value="price">Price</option>
+</select>
+<button type="button" (click)="onSortDirection()">
+  <span *ngIf="SortDirection==='asc'" class="fa fa-sort-alpha-down"></span>
+  <span *ngIf="SortDirection==='desc'" class="fa fa-sort-alpha-up"></span>
+</button>
+
+
+<!-- قسم عرض العقارات -->
+<div class="row mt-5">
+
+    <div *ngFor="let property of properties |filter:'city':city |sort:[SortbyParam,SortDirection]" class="col-sm-6 col-lg-4 mb-3">
+        <!-- من اجل كل اوبجكت ممرر من السيرفس سنستدعي الكومبوننت الابن (بروبرتي كارد) مع تمرير الاوبجكت له ليظهر هنا ضمن الاب (بروبرتي ليست) -->
+        <spa-property-card [property]="property"></spa-property-card>
+        <!-- [property]="property": تمرير للابن (بروبرتي كارد) اوبجيكت (عقار) من التي ارجعتها السيرفس واحدا تلو الاخر -->
+    </div>
+
+</div>
